@@ -1,3 +1,10 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+@theme {
+    --font-fira-code: 'Fira Code', monospace;
+
+    --color-main-paper: #FFF;
+    --color-main-container: oklch(0.99 0.003 360);
+}

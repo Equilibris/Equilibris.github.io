@@ -1,26 +1,12 @@
 <script lang="ts">
-	import HSpacer from '$lib/components/HSpacer';
-	import PostRenderer from '$lib/components/PostRenderer';
+	import HSpacer from '$lib/components/TopBar';
 	import { posts } from '$lib/Blog';
+	import TopBar from '$lib/components/TopBar';
 </script>
 
-<div class="bg-main-container">
-	<HSpacer width="mid">
-		<section class="flex flex-col justify-center">
-			<div class="space-y-6">
-				<h1 class="text-4xl font-bold sm:text-5xl">ws</h1>
-				<div class="prose prose-lg text-gray-700">
-					<p>A simple blog about a random collection of things.</p>
-				</div>
-			</div>
-		</section>
-	</HSpacer>
+<div class="backdrop-blur-sm">
 
-	<section class="space-y-8">
-		{#each posts as post}
-			<HSpacer width="wide">
-				<PostRenderer {post} />
-			</HSpacer>
-		{/each}
-	</section>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis architecto corrupti dolor ab voluptas nemo aut maiores facere ut! Quas fuga recusandae enim dolores deleniti reprehenderit ab commodi ratione in placeat eum dolor nisi asperiores beatae harum laborum mollitia ipsum, quaerat atque ipsa officia rem consequuntur veniam. Provident quasi alias quod? Voluptates commodi architecto laboriosam ea sit quae aperiam. Voluptate molestiae modi nesciunt aut quasi? Expedita ex quod, suscipit possimus mollitia quae nisi necessitatibus dolor consectetur praesentium quos nulla nemo nobis nihil eos debitis aut esse doloremque! Cum rem earum porro voluptatum nobis dolorum, itaque pariatur soluta omnis amet? Aut!
+
+    <div class="h-200"></div>
 </div>

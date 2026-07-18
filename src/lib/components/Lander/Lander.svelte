@@ -11,14 +11,60 @@
         return szm
     }
 
+    const nbase = [
+            "                                    ",
+            " XXXX            XXXX      XXXXXXXX ",
+            " XXXX            XXXX      XXXXXXXX ",
+            " XXXX            XXXX      XXXXXXXX ",
+            " XXXX            XXXX      XXXXXXXX ",
+            " XXXX    XXXX    XXXX      XXXX     ",
+            " XXXX    XXXX    XXXX      XXXX     ",
+            " XXXX    XXXX    XXXX      XXXX     ",
+            " XXXX    XXXX    XXXX      XXXX     ",
+            " XXXXXXXXXXXXXXXXXXXX  XXXXXXXX     ",
+            " XXXXXXXXXXXXXXXXXXXX  XXXXXXXX     ",
+            " XXXXXXXXXXXXXXXXXXXX  XXXXXXXX     ",
+            " XXXXXXXXXXXXXXXXXXXX  XXXXXXXX     ",
+            "                                    ",
+            "       O                            ",
+            " XXX X O XXX X X XXX XXX XX X X     ",
+            " X X X OO X  XXX X X X X X  X X     ",
+            " XXX XX O X  X X XX  XXX X  XXX     ",
+            " X      O                     X     ",
+            "                                    ",
+            " XXX XXX X X XXX X X  XXX XX XX     ",
+            " X   X X XXX X X X X  X X X  X      ",
+            " XXX XXX XXX XXX X XX XX  X XX      ",
+            "             X                      ",
+            "O                                   ",
+            "O XX X X  XX XXX XXX XXXXX  XX        ",
+            "  X  X X  X O X  X X X X X  X         ",
+            " XX  XXX XX O X  XX  X X X XX         ",
+            "       X    O                       ",
+            "                                    ",
+        ]
+    // WS
+    // PLTHEORY
+    // COMPILERs
+    // SYSTEMS
 
-    const nv = [
-                "           ",
-                " X   X  XX ",
-                " X X X  X  ",
-                " XXXXX XX  ",
-                "           "
-            ].map(x => Array(...x).map(x => x === "X"))
+    const nv  = nbase.map(x => Array(...x).map(x => x === "X"))
+    const pad = nbase.map(x => Array(...x).map(x => x === "O"))
+    {
+        for (let x = 0; x < nv.length; x++) {
+            for (let y = 0; y < nv[x].length; y++) {
+                pad[x][y] ||= ((nv[x-1] || [])[y - 1] ||
+                    (nv[x]   || [])[y - 1] ||
+                    (nv[x+1] || [])[y - 1] ||
+                    (nv[x-1] || [])[y] ||
+                    // (nv[x]   || [])[y - 1] ||
+                    (nv[x+1] || [])[y] ||
+                    (nv[x-1] || [])[y + 1] ||
+                    (nv[x]   || [])[y + 1] ||
+                    (nv[x+1] || [])[y + 1] || false)
+            }
+        }
+    }
 
 
     $effect(()=> {
@@ -63,10 +109,9 @@
         const frameHandler = (fl : number) => {
             if (!active[0]) return
 
-            {
+            if (Math.random() <= frameChance) {
                 const fs = ctx.fillStyle
                 ctx.fillStyle = "#FFFFFF10"
-                if (Math.random() <= frameChance)
                     ctx.fillRect(0,0,canvas.width,canvas.height)
                 ctx.fillStyle = fs
             }
@@ -102,7 +147,7 @@
                     const y = Math.floor(Math.random() * canvas.height / boxSz) * boxSz
 
 
-                    let szm = expRandomPow2(6, pbig);
+                    let szm = expRandomPow2(10, pbig);
                     const fs = ctx.strokeStyle
                     ctx.strokeStyle = `#DDD`
 
@@ -117,19 +162,22 @@
                 const bx = 2
                 const by = 2
 
-                const nms = 2
+                const nms = 1
                 const bz = boxSz * nms
 
                 for (let x = 0; x < nv.length; x++) {
-                    let subv = nv[x]
-
-                    for (let y = 0; y < subv.length; y++) {
+                    for (let y = 0; y < nv[x].length; y++) {
                         const xp = (x + bx) * bz
                         const yp = (y + by) * bz
 
                         const fs = ctx.fillStyle
-                        ctx.fillStyle = subv[y] ? "#000" : "#FFF"
-                        ctx.fillRect(yp, xp, bz, bz)
+                        if (nv[x][y]) {
+                            ctx.fillStyle = "#000"
+                            ctx.fillRect(yp, xp, bz, bz)
+                        } else if (pad[x][y]) {
+                            ctx.fillStyle = "#FFF"
+                            ctx.fillRect(yp, xp, bz, bz)
+                        }
                         ctx.fillStyle = fs
                     }
                 }
@@ -147,8 +195,6 @@
 </script>
 
 <div class="h-[80vh] w-full relative z-[-1]" bind:this={prnt}>
-    <canvas class="absolute" style="image-rendering: crisp-edges;" bind:this={canvas}>
-
-    </canvas>
+    <canvas class="absolute" style="image-rendering: crisp-edges;" bind:this={canvas}> </canvas>
 </div>
 

@@ -9,6 +9,11 @@
     --color-main-container: oklch(0.99 0.003 360);
 }
 
+:root {
+    font-variant-ligatures: additional-ligatures;
+    font-feature-settings: "ss01";
+}
+
 *::selection {
     background: black;
     color: white;

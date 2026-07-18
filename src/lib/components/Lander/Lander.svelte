@@ -37,9 +37,9 @@
             " XXX XXX XXX XXX X XX XX  X XX      ",
             "             X                      ",
             "O                                   ",
-            "O XX X X  XX XXX XXX XXXXX  XX        ",
-            "  X  X X  X O X  X X X X X  X         ",
-            " XX  XXX XX O X  XX  X X X XX         ",
+            "O XX X X  XX XXX XXX XXXXX  XX      ",
+            "  X  X X  X O X  X X X X X  X       ",
+            " XX  XXX XX O X  XX  X X X XX       ",
             "       X    O                       ",
             "                                    ",
         ]
@@ -69,9 +69,11 @@
 
     $effect(()=> {
         const psty = getComputedStyle(prnt)
-        const h = document.querySelector("html")?.scrollHeight || parseInt(psty.getPropertyValue("height")) 
+        const pw = parseInt(psty.getPropertyValue("width"))
+        const ph = parseInt(psty.getPropertyValue("height"))
+        const h = document.querySelector("html")?.scrollHeight || parseInt(psty.getPropertyValue("height"))
         canvas.height = h
-        canvas.width = parseInt(psty.getPropertyValue("width"))
+        canvas.width = pw
 
         const realestate = canvas.width * canvas.height
 
@@ -93,20 +95,31 @@
 
         let firstFrame = true
 
-        let mousex = 0;
-        let mousey = 0;
+        let mx = 0;
+        let my = 0;
+        let sx = 0;
+        let sy = 0;
         let moved = false;
         let timeSinceMoved = 0
 
         const mm = (e : MouseEvent) => {
             moved = true;
             timeSinceMoved *= 0.9;
-            mousex = e.x + window.pageXOffset;
-            mousey = e.y + window.pageYOffset;
+            mx = e.x;
+            my = e.y;
+        }
+        const scroll = () => {
+            timeSinceMoved *= 0.9;
+            sx = window.pageXOffset;
+            sy = window.pageYOffset;
         }
         window.addEventListener("mousemove", mm)
+        window.addEventListener("scroll", scroll)
 
         const frameHandler = (fl : number) => {
+            const mousex = mx + sx
+            const mousey = my + sy
+
             if (!active[0]) return
 
             if (Math.random() <= frameChance) {
@@ -120,7 +133,12 @@
             if (moved) {
                 let szm = expRandomPow2(2, pbig);
 
-                const r = Math.min(cursorRand, timeSinceMoved/10)
+                const dstDown = 80
+                const tDiv = 40
+
+                const dst = Math.min(((Math.max(mousey - ph, 0)) / dstDown), 1)
+
+                const r = Math.min(cursorRand * (1 - dst), timeSinceMoved/10)
 
                 const rx = (Math.random() - .5) * 2
                 const ry = (Math.random() - .5) * 2
@@ -136,7 +154,8 @@
 
                 const fs = ctx.fillStyle
                 ctx.fillStyle = "#000"
-                ctx.fillRect(x + inset, y + inset, boxSz * szm - 2 * inset, boxSz * szm - 2 * inset)
+                if (Math.random() > (dst * timeSinceMoved / tDiv))
+                    ctx.fillRect(x + inset, y + inset, boxSz * szm - 2 * inset, boxSz * szm - 2 * inset)
                 ctx.fillStyle = fs
             }
 
@@ -145,7 +164,6 @@
                 for (let i = 0; i < (firstFrame ? firstCnt : 1) * drawCnt; i++) {
                     const x = Math.floor(Math.random() * canvas.width / boxSz) * boxSz
                     const y = Math.floor(Math.random() * canvas.height / boxSz) * boxSz
-
 
                     let szm = expRandomPow2(10, pbig);
                     const fs = ctx.strokeStyle

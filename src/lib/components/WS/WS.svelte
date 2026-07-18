@@ -35,6 +35,6 @@
     height= {height}
     width= {width}
     aria-label="Home"
-    style="image-rendering: crisp-edges;" 
+    style="image-rendering: crisp-edges;"
     bind:this={canvas}
 > </canvas>

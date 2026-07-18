@@ -1,6 +1,10 @@
 <script lang="ts">
+	import { showTopText } from "$lib/state/showTopText";
+	import classNames from "classnames";
+
     let prnt : HTMLDivElement
     let canvas : HTMLCanvasElement
+    let showText = false
 
     const expRandomPow2 = (n : number, p : number) : number => {
         let szm = 1;
@@ -77,10 +81,14 @@
 
         const realestate = canvas.width * canvas.height
 
-        const ctx = canvas.getContext("2d", { alpha: true })
+        const ctx = canvas.getContext("2d", { alpha: false })
+        if (!ctx) return
+
+        ctx.fillStyle = "#FFF"
+        ctx.fillRect(0, 0, 10_000_000, 10_000_000)
+
         const rm = window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
 
-        if (!ctx) return
 
         const active : [boolean] = [true];
 
@@ -90,8 +98,11 @@
         const frameChance = .5
         const cursorRand = 4
 
-        const firstCnt = 400
-        const drawCnt = rm ? (realestate / (boxSz * boxSz)) * .3: (realestate / (boxSz * boxSz)) * 0.003
+        const firstCnt = 8
+        const drawCnt = rm ? (realestate / (boxSz * boxSz)) * .3: (realestate / (boxSz * boxSz)) * 0.004
+
+        const dstDown = 80
+        const tDiv = 20
 
         let firstFrame = true
 
@@ -116,7 +127,16 @@
         window.addEventListener("mousemove", mm)
         window.addEventListener("scroll", scroll)
 
+        const frameVal = 1000/30 // 30fps
+        let lastFrame = 2 * -frameVal
+
         const frameHandler = (fl : number) => {
+            if (fl - lastFrame <= frameVal) {
+                requestAnimationFrame(frameHandler)
+                return
+            }
+            lastFrame = fl
+
             const mousex = mx + sx
             const mousey = my + sy
 
@@ -132,9 +152,6 @@
 
             if (moved) {
                 let szm = expRandomPow2(2, pbig);
-
-                const dstDown = 80
-                const tDiv = 40
 
                 const dst = Math.min(((Math.max(mousey - ph, 0)) / dstDown), 1)
 
@@ -176,7 +193,7 @@
                 firstFrame = false;
             }
 
-            {
+            if($showTopText) {
                 const bx = 2
                 const by = 2
 
@@ -212,7 +229,7 @@
     })
 </script>
 
-<div class="h-[80vh] w-full relative z-[-1]" bind:this={prnt}>
+<div class={classNames("w-full relative z-[-1]", { ["h-[80vh]"] : $showTopText, ["h-0"]: !$showTopText })} bind:this={prnt}>
     <canvas class="absolute" style="image-rendering: crisp-edges;" bind:this={canvas}> </canvas>
 </div>
 

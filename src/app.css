@@ -12,6 +12,9 @@
 :root {
     font-variant-ligatures: additional-ligatures;
     font-feature-settings: "ss01";
+
+    text-align: justify;
+    text-justify: auto;
 }
 
 *::selection {

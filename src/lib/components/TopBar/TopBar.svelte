@@ -3,15 +3,12 @@
 
 </script>
 <div class = "sticky w-full top-0 p-4 z-100">
-    <div class="
-      flex justify-between align-middle p-4 backdrop-blur-xs border border-gray-300 rounded-lg">
-        <div>
-            <a href="/">
-                <WS/>
-            </a>
-        </div>
+    <div class=" flex justify-between align-middle p-4 backdrop-blur-xs border border-gray-300 rounded-sm">
+        <a href="/"> <WS/> </a>
         <div class="flex flex-row align-middle mix-blend-screen text-red">
-            ==> a 1234
+            <a href="/#about-me">
+                About me
+            </a>
         </div>
         <div class="flex flex-row align-middle mix-blend-screen text-red">
             Blog

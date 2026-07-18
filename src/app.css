@@ -3,8 +3,13 @@
 @plugin '@tailwindcss/typography';
 
 @theme {
-    --font-fira-code: 'Fira Code', monospace;
+    --font-sans: 'Fira Code', monospace;
 
     --color-main-paper: #FFF;
     --color-main-container: oklch(0.99 0.003 360);
+}
+
+*::selection {
+    background: black;
+    color: white;
 }

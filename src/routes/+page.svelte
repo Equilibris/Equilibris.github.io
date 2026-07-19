@@ -6,9 +6,8 @@
 </script>
 
 <div id="about-me" class="flex justify-center -mt-25 pt-25">
-    <div class="grid grid-cols-2 max-w-6xl gap-10" style="grid-template-columns: 1.5fr 1fr;">
+    <div class="flex flex-col lg:flex-row max-w-6xl gap-10">
         <div class="flex justify-center flex-col gap-2">
-            <!-- <h1 class="text-xl font-bold text-right">About me</h1> -->
             <div class="w-full border border-gray-300 rounded-sm overflow-hidden">
                 <img src="harstad.jpg" alt="home" />
             </div>

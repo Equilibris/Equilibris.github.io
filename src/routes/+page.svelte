@@ -1,5 +1,6 @@
 <script lang="ts">
-	import A from '$lib/components/A';
+    import { resolve } from '$app/paths';
+    import A from '$lib/components/A';
     import { showTopText } from '$lib/state/showTopText';
 
     showTopText.set(true)
@@ -20,7 +21,7 @@
                 <p class="indent-4">
                     Hi great to meet you, I'm <span title="/ˈvɪljɑm s.ɔːɹɛnsən/">William Sørensen</span>!
                     I am a computer scientist specializing in programming language theory, compilers and systems programming.
-                    I intend to start a <A href="/blog">blog</A> where I write tools and posts about my course!
+                    I intend to start a <A href={resolve("/blog")}>blog</A> where I write tools and posts about my course!
                 </p>
 
                 <p class="indent-4">

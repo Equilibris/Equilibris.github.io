@@ -72,23 +72,28 @@
 
 
     $effect(()=> {
+        if (!canvas || !prnt) {
+            console.log("no canvas or prnt", canvas, prnt)
+            return
+        }
         const psty = getComputedStyle(prnt)
-        const pw = parseInt(psty.getPropertyValue("width"))
-        const ph = parseInt(psty.getPropertyValue("height"))
-        const h = document.querySelector("html")?.scrollHeight || parseInt(psty.getPropertyValue("height"))
+        let ph = parseInt(psty.getPropertyValue("height"))
+        let w = document.querySelector("html")?.scrollHeight || 0
+        let h = document.querySelector("html")?.scrollWidth || 0
+
         canvas.height = h
-        canvas.width = pw
+        canvas.width = w
 
         const realestate = canvas.width * canvas.height
 
         const ctx = canvas.getContext("2d", { alpha: false })
+        if (!prnt) return
         if (!ctx) return
 
         ctx.fillStyle = "#FFF"
         ctx.fillRect(0, 0, 10_000_000, 10_000_000)
 
         const rm = window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
-
 
         const active : [boolean] = [true];
 
@@ -99,19 +104,30 @@
         const cursorRand = 4
 
         const firstCnt = 8
-        const drawCnt = rm ? (realestate / (boxSz * boxSz)) * .3: (realestate / (boxSz * boxSz)) * 0.004
+        const drawFract = 0.004
+        const rmDrawFract = 0.3
 
         const dstDown = 80
-        const tDiv = 20
+        const tDiv = 20 // 20 frames
+        const frameRate = 30
+        const frameVal = 1000/frameRate
+
+        const textXOffset = 2
+        const textYOffset = 2
+        const nameSz = 1
+        const nameBoxSize = boxSz * nameSz
 
         let firstFrame = true
-
         let mx = 0;
         let my = 0;
         let sx = 0;
         let sy = 0;
         let moved = false;
         let timeSinceMoved = 0
+        let lastFrame = 2 * -frameVal
+        let lastTopText = false
+        let frameCnt = 0
+        let drawCnt = rm ? (realestate / (boxSz * boxSz)) * rmDrawFract : (realestate / (boxSz * boxSz)) * drawFract
 
         const mm = (e : MouseEvent) => {
             moved = true;
@@ -127,15 +143,14 @@
         window.addEventListener("mousemove", mm)
         window.addEventListener("scroll", scroll)
 
-        const frameVal = 1000/30 // 30fps
-        let lastFrame = 2 * -frameVal
-
         const frameHandler = (fl : number) => {
             if (fl - lastFrame <= frameVal) {
                 requestAnimationFrame(frameHandler)
                 return
             }
             lastFrame = fl
+
+            if (frameCnt % frameRate != 0) recomputeHeight()
 
             const mousex = mx + sx
             const mousey = my + sy
@@ -145,7 +160,7 @@
             if (Math.random() <= frameChance) {
                 const fs = ctx.fillStyle
                 ctx.fillStyle = "#FFFFFF10"
-                    ctx.fillRect(0,0,canvas.width,canvas.height)
+                    ctx.fillRect(0, 0, canvas.width, canvas.height)
                 ctx.fillStyle = fs
             }
 
@@ -194,30 +209,29 @@
             }
 
             if($showTopText) {
-                const bx = 2
-                const by = 2
-
-                const nms = 1
-                const bz = boxSz * nms
+                lastTopText = true
 
                 for (let x = 0; x < nv.length; x++) {
                     for (let y = 0; y < nv[x].length; y++) {
-                        const xp = (x + bx) * bz
-                        const yp = (y + by) * bz
+                        const xp = (x + textXOffset) * nameBoxSize
+                        const yp = (y + textYOffset) * nameBoxSize
 
                         const fs = ctx.fillStyle
                         if (nv[x][y]) {
                             ctx.fillStyle = "#000"
-                            ctx.fillRect(yp, xp, bz, bz)
+                            ctx.fillRect(yp, xp, nameBoxSize, nameBoxSize)
                         } else if (pad[x][y]) {
                             ctx.fillStyle = "#FFF"
-                            ctx.fillRect(yp, xp, bz, bz)
+                            ctx.fillRect(yp, xp, nameBoxSize, nameBoxSize)
                         }
                         ctx.fillStyle = fs
                     }
                 }
+            } else if (lastTopText) {
+                recomputeHeight(true)
             }
             timeSinceMoved++;
+            frameCnt++;
             if (!rm) requestAnimationFrame(frameHandler)
         }
 

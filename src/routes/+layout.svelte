@@ -11,10 +11,18 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<Lander />
+<Lander>
+    <TopBar />
 
-<TopBar />
+    <div class="p-4 min-h-screen">
+        {@render children?.()}
+    </div>
 
-<div class="p-4">
-    {@render children?.()}
-</div>
+    <div class="flex justify-center">
+        <div class="w-[90vw] h-20 border-t border-l border-r  border-gray-300 backdrop-blur-sm p-4 rounded-t-sm">
+        </div>
+    </div>
+</Lander>
+
+
+

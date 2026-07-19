@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { showTopText } from '$lib/state/showTopText';
+	import A from '$lib/components/A';
+    import { showTopText } from '$lib/state/showTopText';
 
     showTopText.set(true)
 </script>
@@ -12,7 +13,7 @@
                 <img src="harstad.jpg" alt="home" />
             </div>
             <div class="text-xs text-gray-500 text-right">
-                Photo by <a href="https://unsplash.com/@gskjalmar?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Geir Skjalmar</a> on <a href="https://unsplash.com/photos/a-large-body-of-water-with-snow-covered-mountains-in-the-background-jvPrC3n60u0?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+                Photo by <A href="https://unsplash.com/@gskjalmar?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Geir Skjalmar</A> on <A href="https://unsplash.com/photos/a-large-body-of-water-with-snow-covered-mountains-in-the-background-jvPrC3n60u0?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</A>
             </div>
         </div>
         <div class="flex flex-col gap-2">
@@ -20,12 +21,12 @@
                 <p class="indent-4">
                     Hi great to meet you, I'm <span title="/ˈvɪljɑm s.ɔːɹɛnsən/">William Sørensen</span>!
                     I am a computer scientist specializing in programming language theory, compilers and systems programming.
-                    I intend to start a <a href="/blog">blog</a> where I write tools and posts about my course!
+                    I intend to start a <A href="/blog">blog</A> where I write tools and posts about my course!
                 </p>
 
                 <p class="indent-4">
                     As a bit of background,
-                    I stem from <a href="https://www.openstreetmap.org/relation/407767#map=8/68.975/16.729">Harstad</a>,
+                    I stem from <A href="https://www.openstreetmap.org/relation/407767#map=8/68.975/16.729">Harstad</A>,
                     a beautiful city of the north.
                     I later moved to Cambridge for uni where I still reside.
                 </p>

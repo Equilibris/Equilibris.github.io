@@ -1,9 +1,12 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
     import A from '$lib/components/A';
+	import type { Project } from '$lib/content/projects';
     import { showTopText } from '$lib/state/showTopText';
 
     showTopText.set(true)
+
+    const projects : Project[] = Object.values(import.meta.glob("./projects/*/+page.svelte", { eager : true }))
 </script>
 
 <div id="about-me" class="flex justify-center -mt-25 pt-25">
@@ -32,7 +35,7 @@
                 </p>
                 <p class="indent-4">
                     In my freetime I enjoy long distance biking,
-                    rowing and, not as often as I would like to playing, the timps.
+                    rowing, and playing the timps (though not as often as I'd like to).
                 </p>
             </div>
             <!-- <div class="flex flex-row items-end"> -->
@@ -43,6 +46,32 @@
             <!--         <img alt="Byvåpen" loading="lazy" height="20" src="https://www.harstad.kommune.no/images/18.3b84deaf195b24645314a7a1/1743682445663/byvapen.gif"> -->
             <!--     </div> -->
             <!-- </div> -->
+        </div>
+    </div>
+</div>
+
+<div class="flex justify-center py-8">
+    <div class="max-w-6xl w-full flex flex-col gap-2">
+        <div class="backdrop-blur-sm border border-gray-300 rounded-sm p-4">
+            Over the years I have worked on a few different projects.
+            Most of these are just silly proof of concepts,
+            but some of them also larger, more developed projects.
+        </div>
+        <div class="flex flex-col gap-2">
+            {#each projects as proj}
+                <div class="min-h-40 flex gap-2">
+                    <div class="border border-gray-300 rounded-sm w-40 aspect-square backdrop-blur-sm">
+                    </div>
+                    <div class="w-full py-2 flex flex-col justify-center gap-2">
+                        <h2 class="font-bold">
+                            <A href={`/projects/${proj.slug}`}> {@render proj.title()} </A>
+                        </h2>
+                        <div class="border border-gray-300 rounded-sm w-full h-20 backdrop-blur-sm p-2">
+                            {@render proj.synopsis()}
+                        </div>
+                    </div>
+                </div>
+            {/each}
         </div>
     </div>
 </div>

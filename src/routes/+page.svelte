@@ -64,7 +64,7 @@
                     </div>
                     <div class="w-full py-2 flex flex-col justify-center gap-2">
                         <h2 class="font-bold">
-                            <A href={`/projects/${proj.slug}`}> {@render proj.title()} </A>
+                            <A href={resolve(`/projects/${proj.slug}` as any)}> {@render proj.title()} </A>
                         </h2>
                         <div class="border border-gray-300 rounded-sm w-full h-20 backdrop-blur-sm p-2">
                             {@render proj.synopsis()}

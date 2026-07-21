@@ -15,7 +15,7 @@
 <Lander>
     <TopBar />
 
-    <div class="p-4 min-h-screen">
+    <div class="px-4 min-h-screen">
         {@render children?.()}
     </div>
 

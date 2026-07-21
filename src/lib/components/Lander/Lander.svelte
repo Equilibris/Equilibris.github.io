@@ -17,8 +17,8 @@
     })
 </script>
 
-<div class={classNames("w-full relative z-[-1]", { ["h-[80vh]"] : $showTopText, ["h-0"]: !$showTopText })} bind:this={prnt}>
-    <canvas class="absolute" style="image-rendering: crisp-edges;" bind:this={canvas}> </canvas>
+<div class={classNames("w-full relative z-[-1] h-0", $showTopText ? "h-[80vh]" : "h-0")} bind:this={prnt}>
+    <canvas class="absolute" height=0 style="image-rendering: crisp-edges;" bind:this={canvas}> </canvas>
 </div>
 <div bind:this={measue}>
     {@render children()}

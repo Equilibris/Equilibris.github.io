@@ -3,13 +3,17 @@
 	import type { Snippet } from "svelte";
 
     interface Props {
-        href : string
+        href?: string
         children : Snippet
+        hintOnly?: boolean
     }
 
-    const { href, children } : Props  = $props()
-
+    const { href, hintOnly, children } : Props  = $props()
 </script>
 
-<a class="underline hover:no-underline hover:text-white hover:bg-black" href={href}>{@render children()}</a>
+{#if hintOnly}
+    <span class="underline hover:no-underline hover:text-white hover:bg-black">{@render children()}</span>
+{:else}
+    <a class="underline hover:no-underline hover:text-white hover:bg-black" href={href}>{@render children()}</a>
+{/if}
 

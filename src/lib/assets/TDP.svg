@@ -1,0 +1,39 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="10" y="70" width="10" height="10" fill="black"/>
+<rect x="10" y="120" width="10" height="10" fill="black"/>
+<rect x="10" y="70" width="10" height="10" fill="black"/>
+<rect x="10" y="120" width="10" height="10" fill="black"/>
+<rect x="30" y="70" width="10" height="10" fill="black"/>
+<rect x="30" y="120" width="10" height="10" fill="black"/>
+<rect x="40" y="100" width="10" height="10" fill="black"/>
+<rect x="40" y="90" width="10" height="10" fill="black"/>
+<rect x="180" y="90" width="10" height="10" fill="black"/>
+<rect x="50" y="110" width="10" height="10" fill="black"/>
+<rect x="60" y="120" width="10" height="10" fill="black"/>
+<rect x="70" y="130" width="10" height="10" fill="black"/>
+<rect x="80" y="60" width="10" height="10" transform="rotate(90 80 60)" fill="black"/>
+<rect x="70" y="70" width="10" height="10" transform="rotate(90 70 70)" fill="black"/>
+<rect x="60" y="80" width="10" height="10" transform="rotate(90 60 80)" fill="black"/>
+<rect x="190" y="110" width="10" height="10" transform="rotate(-180 190 110)" fill="black"/>
+<rect x="180" y="90" width="10" height="10" transform="rotate(-180 180 90)" fill="black"/>
+<rect x="170" y="80" width="10" height="10" transform="rotate(-180 170 80)" fill="black"/>
+<rect x="160" y="70" width="10" height="10" transform="rotate(-180 160 70)" fill="black"/>
+<rect x="150" y="140" width="10" height="10" transform="rotate(-90 150 140)" fill="black"/>
+<rect x="160" y="130" width="10" height="10" transform="rotate(-90 160 130)" fill="black"/>
+<rect x="170" y="120" width="10" height="10" transform="rotate(-90 170 120)" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M70 50L40 50L40 20L70 20L70 50ZM50 40L60 40L60 30L50 30L50 40Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M130 90L100 90L100 60L130 60L130 90ZM110 80L120 80L120 70L110 70L110 80Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M130 140L100 140L100 110L130 110L130 140ZM110 130L120 130L120 120L110 120L110 130Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M130 180L100 180L100 150L130 150L130 180ZM110 170L120 170L120 160L110 160L110 170Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M70 180L40 180L40 150L70 150L70 180ZM50 170L60 170L60 160L50 160L50 170Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M190 180L160 180L160 150L190 150L190 180ZM170 170L180 170L180 160L170 160L170 170Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M130 50L100 50L100 20L130 20L130 50ZM110 40L120 40L120 30L110 30L110 40Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M190 50L160 50L160 20L190 20L190 50ZM170 40L180 40L180 30L170 30L170 40Z" fill="black"/>
+<rect x="110" y="50" width="10" height="10" fill="black"/>
+<rect x="110" y="140" width="10" height="10" fill="black"/>
+<rect x="110" y="90" width="10" height="20" fill="black"/>
+<rect x="100" y="160" width="10" height="30" transform="rotate(90 100 160)" fill="black"/>
+<rect x="160" y="160" width="10" height="30" transform="rotate(90 160 160)" fill="black"/>
+<rect x="160" y="30" width="10" height="30" transform="rotate(90 160 30)" fill="black"/>
+<rect x="100" y="30" width="10" height="30" transform="rotate(90 100 30)" fill="black"/>
+</svg>

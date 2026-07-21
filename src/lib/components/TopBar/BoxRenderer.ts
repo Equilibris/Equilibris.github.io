@@ -177,12 +177,14 @@ export class BoxRenderer {
 
     public attachListener() {
         // TODO: might not work
-        window.addEventListener("mousemove", this.mouseMove)
-        window.addEventListener("scroll", this.scroll)
+        const mm = this.mouseMove.bind(this)
+        const s = this.scroll.bind(this)
+        window.addEventListener("mousemove", mm)
+        window.addEventListener("scroll", s)
 
         return () => {
-            window.removeEventListener("mousemove", this.mouseMove)
-            window.removeEventListener("scroll", this.scroll)
+            window.removeEventListener("mousemove", mm)
+            window.removeEventListener("scroll", s)
         }
     }
 

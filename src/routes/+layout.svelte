@@ -13,16 +13,18 @@
 </svelte:head>
 
 <Lander>
-    <TopBar />
+    <div class="min-h-screen flex flex-col">
+        <TopBar />
 
-    <div class="px-4 min-h-screen">
-        {@render children?.()}
-    </div>
+        <div class="px-4 flex-1">
+            {@render children?.()}
+        </div>
 
-    <div class="flex justify-center">
-        <div class="w-[90vw] h-20 border-t border-l border-r border-gray-300 backdrop-blur-sm p-4 rounded-t-sm flex items-center justify-center">
-            <div>
-                Source code for this site on <A href="https://github.com/Equilibris/Equilibris.github.io/">Github</A>
+        <div class="flex justify-center">
+            <div class="w-[90vw] h-20 border-t border-l border-r border-gray-300 backdrop-blur-sm p-4 rounded-t-sm flex items-center justify-center">
+                <div>
+                    Source code for this site on <A href="https://github.com/Equilibris/Equilibris.github.io/">Github</A>
+                </div>
             </div>
         </div>
     </div>

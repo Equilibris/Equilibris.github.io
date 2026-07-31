@@ -1,0 +1,70 @@
+@top Program { Formula }
+
+// Precedence, loosest-binding to tightest.
+// Prefix operators (quantifiers, unary temporal, not) bind tighter than
+// any binary connective, so "A x U y" parses as (A x) U y, not A (x U y).
+@precedence {
+  iff @left,
+  implies @right,
+  or @left,
+  and @left,
+  temporalBin @left,
+  prefix @right
+}
+
+Formula {
+  Atom |
+  ParenFormula |
+  QuantifiedFormula |
+  UnaryTemporalFormula |
+  UnaryLogFormula |
+  BinaryTemporalFormula |
+  BinaryLogFormula
+}
+
+Atom { Prop | True | False }
+
+ParenFormula { "(" Formula ")" }
+
+// Prefix forms: modality applied to the tightest-binding Formula to its right
+QuantifiedFormula { PathQuantifier !prefix Formula }
+UnaryTemporalFormula { TemporalUnaryOp !prefix Formula }
+BinaryLogFormula {
+  Formula !and And Formula |
+  Formula !or Or Formula |
+  Formula !implies Implies Formula |
+  Formula !iff Iff Formula
+}
+BinaryTemporalFormula { 
+    Not !temporalBin TemporalBinaryOp Formula
+}
+UnaryLogFormula { Not !prefix Formula }
+
+@tokens {
+  // Atomic propositions: must start lowercase, contain no uppercase at all
+  Prop { $[a-z] $[a-z0-9_]* }
+
+  // Modalities: the ONLY uppercase tokens in the language
+  PathQuantifier { $[AE] }     // A, E
+  TemporalUnaryOp { $[XFG] }   // X, F, G
+  TemporalBinaryOp { $[URW] }  // U, R, W
+
+  Not { "!" }
+  And { "&&" }
+  Or { "||" }
+  Implies { "->" }
+  Iff { "<->" }
+
+  True { "true" }
+  False { "false" }
+
+  LineComment { "//" ![\n]* }
+  space { $[ \t\n\r]+ }
+
+  "(" ")"
+
+  // "true"/"false" fully match the Prop regex too — prefer the keyword
+  @precedence { True, False, Prop }
+}
+
+@skip { space | LineComment }

@@ -16,7 +16,12 @@ const config = {
             base: process.argv.includes('dev') ? '' : process.env.BASE_PATH
         }
     },
-    extensions: ['.svelte', '.svx']
+    extensions: ['.svelte', '.svx'],
+    compilerOptions: {
+        experimental: {
+            async: true
+        }
+    }
 };
 
 export default config;

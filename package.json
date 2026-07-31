@@ -4,7 +4,7 @@
     "version": "0.0.1",
     "type": "module",
     "scripts": {
-        "build:lezer": "lezer-generator src/lib/state/ctls/ctlstar.grammar -o src/lib/state/ctls/gen.ctlstar.js",
+        "build:lezer": "lezer-generator src/lib/content/tools/mcheck/ctls/ctlstar.grammar -o src/lib/content/tools/mcheck/ctls/gen.ctlstar.js",
         "dev": "vite dev",
         "build": "pnpm run build:lezer && vite build",
         "preview": "vite preview",
@@ -58,7 +58,10 @@
         "bufferutil": "^4.1.0",
         "classnames": "^2.5.1",
         "codemirror": "^6.0.2",
+        "graphology": "^0.26.0",
+        "graphology-layout-force": "^0.2.4",
         "lodash": "^4.18.1",
+        "sigma": "^3.0.3",
         "utf-8-validate": "^5.0.10"
     }
 }

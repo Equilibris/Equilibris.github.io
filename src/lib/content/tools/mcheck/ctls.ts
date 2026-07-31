@@ -48,7 +48,6 @@ type Expr =
         | { kind: "temporalBiOp"; form: TemporalBiOp; lhs: Expr; rhs: Expr }
         | { kind: "logicalBiOp"; form: LogicalBiOp; lhs: Expr; rhs: Expr }
         | { kind: "logicalUnOp"; form: LogicalUnOp; value: Expr }
-        | { kind: "ident"; value: string }
         | { kind: "hole"; content: string; more?: unknown }) & { stx: SyntaxNode }
 
 const siblingsToExpr = (nd: SyntaxNode | null, s: string): Expr[] => {
@@ -136,7 +135,6 @@ const nodeToExpr = (stx: SyntaxNode, s: string): Expr => {
         case "BinaryLogFormula": {
             const children = siblingsToExpr(stx.firstChild, s)
             let form: null | LogicalBiOp = null
-            console.log(children)
             if (children[1].kind !== "hole") return hv
             switch (children[1].content) {
                 case "&&": { form = "and"; break }
@@ -168,13 +166,24 @@ const nodeToExpr = (stx: SyntaxNode, s: string): Expr => {
     }
 }
 
+const holeless = (e: Expr): boolean => {
+    switch (e.kind) {
+        case "bool":
+        case "prop": return true
+        case "temporalUnOp":
+        case "logicalUnOp":
+        case "quant": return holeless(e.value)
+        case "temporalBiOp":
+        case "logicalBiOp": return holeless(e.lhs) && holeless(e.rhs)
+        case "hole": return false
+    }
+}
+
 export const sToExpr = (s: string): Expr | null => {
     const p = parser.parse(s).topNode
 
     const stx = nodeToExpr(p, s)
-    console.log(stx)
-    if (!stx || stx.kind === "hole") return null
-    return stx
+    return holeless(stx) ? stx : null
 }
 
 export { parser } from "./ctls/gen.ctlstar"

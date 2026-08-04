@@ -1,16 +1,34 @@
 <script lang="ts">
-	import { container } from "$lib/style";
     import Graph from "graphology";
-	import forceLayout from "graphology-layout-force";
     import ForceSupervisor from "graphology-layout-force/worker";
     import Sigma from "sigma";
-    import type { GraphData } from "$lib/content/tools/mcheck/graph"
+    import type { GraphData } from "$lib/content/tools/mcheck/models"
+    import EdgeCurveProgram from "@sigma/edge-curve";
 
     let space : HTMLElement
 
-    let { g } : { g : GraphData } = $props()
+    let { g, checked } : { g : GraphData; checked : null | Set<string> } = $props()
 
-    const graph = new Graph();
+    type VtxData = {
+        x : number
+        y : number
+        size: number
+        props: Set<string>
+        label: string
+        highlighted: boolean
+        color?: string
+    }
+    type EdgeData = {
+        type: string
+        label: string
+        size: number
+    }
+    const graph = new Graph<VtxData, EdgeData>({
+        allowSelfLoops: true
+    });
+
+    const lpToS = (label : string, props: Set<string>): string => `${label} : ${[...props.keys()].join(" ")}`.trim()
+    const randRange = () => (Math.random() - .5) * 20
 
     $effect(()=>{
         const layout = new ForceSupervisor(graph, { isNodeFixed: (_, attr) => attr.highlighted });
@@ -21,46 +39,89 @@
         }
     })
 
-    const randRange = () => (Math.random() - .5) * 20
+    const selCol = "red"
+    const unselCol = ""
 
     $effect(()=>{
-        for (const v in g.vtxs) {
-            if (!graph.hasNode(v)) {
-                graph.addNode(v, {props: g.vtxs[v], x : randRange(), y : randRange(), size:10})
-            }
-            if (graph.getNodeAttribute(v, "props") == g.vtxs[v]) {
-                graph.setAttribute(v, g.vtxs[v])
-            }
-        }
         for (const nd of graph.nodes()) {
             if (!g.vtxs[nd]) graph.dropNode(nd)
         }
-        // TODO: Change this to be a hashmap, of a hashmap, of strings
-        for (const {from, to, name} of g.edge) {
-            if (!graph.areDirectedNeighbors(from, to)) {
-                console.log("adding edge", from, to)
-                graph.addEdge(from, to, { name })
+        for (const edge of graph.edges()) {
+            const v : string | undefined = (g.edge[graph.source(edge)] ?? {})[graph.target(edge)]
+            if (v === undefined) {
+               graph.dropEdge(edge)
+               continue
+            }
+            if (graph.getEdgeAttribute(edge, "label") !== v) {
+                graph.setEdgeAttribute(edge, "label", v)
             }
         }
-        for (const edge of graph.edges()) {
-            console.log(edge)
+        for (const v in g.vtxs) {
+            if (!graph.hasNode(v)) {
+                const vp = v+"'"
+                graph.addNode(v, {
+                    props: g.vtxs[v],
+                    x : randRange(),
+                    y : randRange(),
+                    size: 10,
+                    label: lpToS(v, g.vtxs[v]),
+                    highlighted : false,
+                    color: unselCol
+                })
+                // graph.addNode(vp, {
+                //     props: new Set(),
+                //     x : randRange(),
+                //     y : randRange(),
+                //     size: 1,
+                //     label: "",
+                //     highlighted : false,
+                //     color: unselCol
+                // })
+                // graph.addEdge(v, vp, {
+                //     type:"curved",
+                //     label : "",
+                //     curvature: 1
+                // })
+                // graph.addEdge(vp, v, {
+                //     type:"curved",
+                //     label : "",
+                //     curvature: 1
+                // })
+            }
+            const lab = lpToS(v, g.vtxs[v])
+            graph.setNodeAttribute(v, "props", g.vtxs[v])
+            graph.setNodeAttribute(v, "label", lab)
         }
-
-        // Create a sample graph
-        // graph.addNode("n1", { x: 0, y: 0, size: 10, });
-        // graph.addNode("n2", { x: -5, y: 5, size: 10, });
-        // graph.addNode("n3", { x: 5, y: 5, size: 10, });
-        // graph.addNode("n4", { x: 0, y: 10, size: 10, });
-        // graph.addEdge("n1", "n2");
-        // graph.addEdge("n2", "n4");
-        // graph.addEdge("n4", "n3");
-        // graph.addEdge("n3", "n1");
+        // TODO: Change this to be a hashmap, of a hashmap, of strings
+        for (const from in g.edge) {
+            for (const to in g.edge[from]) {
+                if (!graph.areDirectedNeighbors(from, to)) {
+                    graph.addEdge(from, to, { label: g.edge[from][to], type: "arrow", size:4 })
+                }
+            }
+        }
     })
 
+    $effect(() => {
+        if (!checked) return
+        for (const i in g.vtxs) {
+            graph.setNodeAttribute(i, "color", checked.has(i) ? selCol : unselCol)
+        }
+    })
     $effect(()=> {
 
         // Create the sigma
-        const renderer = new Sigma(graph, space, { minCameraRatio: 0.5, maxCameraRatio: 2 });
+        const renderer = new Sigma(graph, space, {
+            minCameraRatio: 0.5,
+            maxCameraRatio: 2,
+            labelDensity: 1,
+            renderEdgeLabels: true,
+            autoRescale: true,
+            autoCenter : true,
+            edgeProgramClasses: {
+                curved : EdgeCurveProgram
+            }
+        });
 
         //
         // Drag'n'drop feature
@@ -148,8 +209,6 @@
 
         return () => {
             renderer.kill();
-            layout.stop()
-            layout.kill()
         }
     })
 </script>

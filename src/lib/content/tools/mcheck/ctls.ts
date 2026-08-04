@@ -2,6 +2,7 @@ import { parser } from "./ctls/gen.ctlstar"
 import { LRLanguage, LanguageSupport, foldNodeProp } from "@codemirror/language";
 import type { SyntaxNode } from "@lezer/common";
 import { styleTags, tags as t } from "@lezer/highlight";
+import type { Expr, LogicalBiOp, TemporalUnOp } from "./models";
 
 const ctlStarLanguage = LRLanguage.define({
     parser: parser.configure({
@@ -33,22 +34,6 @@ const ctlStarLanguage = LRLanguage.define({
 
 export const ctlStar = () =>
     new LanguageSupport(ctlStarLanguage);
-
-type Quant = "existential" | "universal";
-type TemporalUnOp = "next" | "future" | "generally";
-type TemporalBiOp = "until";
-type LogicalBiOp = "iff" | "and" | "or" | "implies"
-type LogicalUnOp = "not"
-
-type Expr =
-    ({ kind: "bool"; value: boolean }
-        | { kind: "prop"; value: string }
-        | { kind: "quant"; form: Quant; value: Expr }
-        | { kind: "temporalUnOp"; form: TemporalUnOp; value: Expr }
-        | { kind: "temporalBiOp"; form: TemporalBiOp; lhs: Expr; rhs: Expr }
-        | { kind: "logicalBiOp"; form: LogicalBiOp; lhs: Expr; rhs: Expr }
-        | { kind: "logicalUnOp"; form: LogicalUnOp; value: Expr }
-        | { kind: "hole"; content: string; more?: unknown }) & { stx: SyntaxNode }
 
 const siblingsToExpr = (nd: SyntaxNode | null, s: string): Expr[] => {
     const out = []

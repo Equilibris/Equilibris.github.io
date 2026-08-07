@@ -19,6 +19,7 @@ export const sToGraph = (s: string): GraphData => {
             const nm = match[1]
             const vals = new Set(match[3]?.split(" ") || [])
             vtxs[nm] = vals
+            edge[nm] ??= {}
             continue
         } else if (match = l.match(edgeRx)) {
             const from = match[1]

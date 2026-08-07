@@ -10,7 +10,7 @@
 {/snippet}
 
 {#snippet synopsis()}
-    Coinductives
+    A quick project done before uni was a LL(k) parser implemented as Ruest generics.
 {/snippet}
 
 {#snippet icon()}

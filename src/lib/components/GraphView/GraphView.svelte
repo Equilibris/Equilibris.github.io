@@ -4,18 +4,26 @@
     import Sigma from "sigma";
     import type { GraphData } from "$lib/content/tools/mcheck/models"
     import EdgeCurveProgram from "@sigma/edge-curve";
+    import { NodeBorderProgram } from "@sigma/node-border";
+	import { deadCol, selCol, unselCol } from "$lib/content/tools/mcheck/colors";
 
     let space : HTMLElement
 
-    let { g, checked } : { g : GraphData; checked : null | Set<string> } = $props()
+    let { g, checked, deads = $bindable() } : { 
+        g : GraphData
+        checked : null | Set<string>
+        deads: Set<string>
+    } = $props()
 
     type VtxData = {
+        type?: "bordered"
         x : number
         y : number
         size: number
         props: Set<string>
         label: string
         highlighted: boolean
+        dead : boolean
         color?: string
     }
     type EdgeData = {
@@ -38,9 +46,6 @@
             layout.kill()
         }
     })
-
-    const selCol = "red"
-    const unselCol = ""
 
     $effect(()=>{
         for (const nd of graph.nodes()) {
@@ -66,7 +71,8 @@
                     size: 10,
                     label: lpToS(v, g.vtxs[v]),
                     highlighted : false,
-                    color: unselCol
+                    color: unselCol,
+                    dead: false
                 })
                 // graph.addNode(vp, {
                 //     props: new Set(),
@@ -93,19 +99,35 @@
             graph.setNodeAttribute(v, "label", lab)
         }
         // TODO: Change this to be a hashmap, of a hashmap, of strings
+        const d = new Set<string>()
         for (const from in g.edge) {
+            let dead = true
+            let selfc = false
             for (const to in g.edge[from]) {
                 if (!graph.areDirectedNeighbors(from, to)) {
                     graph.addEdge(from, to, { label: g.edge[from][to], type: "arrow", size:4 })
                 }
+                if (from === to) selfc = true
+                dead = false
             }
+            graph.setNodeAttribute(from, "dead", dead)
+            if(dead) {
+                d.add(from)
+                graph.setNodeAttribute(from, "color", deadCol)
+            }
+            graph.setNodeAttribute(from, "type", selfc ? "bordered" : undefined)
         }
+        deads = d
     })
 
     $effect(() => {
         if (!checked) return
         for (const i in g.vtxs) {
-            graph.setNodeAttribute(i, "color", checked.has(i) ? selCol : unselCol)
+            if (graph.getNodeAttribute(i, "dead")){
+                graph.setNodeAttribute(i, "color", deadCol)
+            } else {
+                graph.setNodeAttribute(i, "color", checked.has(i) ? selCol : unselCol)
+            }
         }
     })
     $effect(()=> {
@@ -118,8 +140,14 @@
             renderEdgeLabels: true,
             autoRescale: true,
             autoCenter : true,
+            enableCameraPanning: false,
+            enableCameraZooming: false,
+            enableCameraRotation: false,
             edgeProgramClasses: {
                 curved : EdgeCurveProgram
+            },
+            nodeProgramClasses: {
+                bordered: NodeBorderProgram
             }
         });
 

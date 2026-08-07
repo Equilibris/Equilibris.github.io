@@ -9,6 +9,8 @@
     let ctlStarContent = $state("A G p")
     let graphContent = $state(`n1[p]\nn2[p]\nn3[p]\nn1 n1\nn2 n1\nn2 n3`)
 
+    let deads = $state(new Set<string>())
+
     const dbCtl = $derived.by(debounce(() => ctlStarContent, 300))
     const parseCtl = $derived(sToExpr(dbCtl))
 
@@ -58,6 +60,7 @@
             <GraphView
                 g={parseGraph}
                 checked={checked?.nset || null}
+                bind:deads={deads}
             />
         {:catch e}
             <div class={`p-2`}>

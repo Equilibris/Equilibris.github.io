@@ -1,7 +1,31 @@
-import type { Expr, GraphData } from "./models";
+import type { Expr, GraphData, Quant } from "./models";
+
+const allSuccsIn = (s: string, set: Set<string>, g: GraphData): boolean => {
+    for (const ndalt in g.edge[s]) {
+        if (!set.has(ndalt))
+            return false
+    }
+    return true
+}
+const anySuccsIn = (s: string, set: Set<string>, g: GraphData): boolean => {
+    for (const ndalt in g.edge[s]) {
+        if (!set.has(ndalt))
+            return true
+    }
+    return false
+}
+const succsIn = (s: string, set: Set<string>, q: Quant, g: GraphData) => {
+    switch (q) {
+        case "existential":
+            return anySuccsIn(s, set, g)
+        case "universal":
+            return allSuccsIn(s, set, g)
+    }
+}
+
 
 // By default, treat this as being under an existential qunatifier
-const checkState = (e: Expr, g: GraphData, all: Set<string>): Expr => {
+const checkState = (e: Expr, g: GraphData, all: Set<string>, quant: Quant): Expr => {
     switch (e.kind) {
         case "bool": {
             if (e.value) {
@@ -24,32 +48,40 @@ const checkState = (e: Expr, g: GraphData, all: Set<string>): Expr => {
             }
         }
         case "quant": {
-            if (e.form === "universal") {
-                const v = checkState({
-                    kind: "logicalUnOp", form: "not", value: e.value, stx: e.stx,
-                }, g, all)
-                if (v.nset === undefined) throw new Error("No nset")
-                return {
-                    ...e,
-                    nset: all.difference(v.nset)
-                }
-            } else {
-                return {
-                    ...e,
-                    value: checkState(e.value, g, all)
-                }
+            const value = checkState(e.value, g, all, e.form)
+            return {
+                ...e,
+                nset: value.nset,
+                value
             }
         }
         case "temporalUnOp": {
             switch (e.form) {
                 case "next": {
-                    const value = checkState(e.value, g, all)
+                    const value = checkState(e.value, g, all, quant)
                     if (value.nset === undefined) throw new Error("No nset")
 
-                    const nset = new Set<string>()
+                    const vals: Record<string, Set<string>> = {}
                     for (const x of value.nset) {
                         for (const k in g.rev_edge[x]) {
-                            nset.add(k)
+                            const arr = vals[k] ?? new Set()
+                            arr.add(k)
+                            vals[k] = arr
+                        }
+                    }
+                    const nset = new Set<string>()
+                    switch (quant) {
+                        case "existential": {
+                            for (const nd in vals) {
+                                nset.add(nd)
+                            }
+                            break
+                        }
+                        case "universal": {
+                            for (const nd in vals) {
+                                if (allSuccsIn(nd, value.nset, g)) { nset.add(nd) }
+                            }
+                            break
                         }
                     }
                     return {
@@ -59,7 +91,7 @@ const checkState = (e: Expr, g: GraphData, all: Set<string>): Expr => {
                     }
                 }
                 case "future": {
-                    const value = checkState(e.value, g, all)
+                    const value = checkState(e.value, g, all, quant)
                     if (value.nset === undefined) throw new Error("No nset")
                     const frontier: string[] = [...value.nset]
                     const nset = new Set<string>()
@@ -71,6 +103,17 @@ const checkState = (e: Expr, g: GraphData, all: Set<string>): Expr => {
                         }
                         nset.add(v)
                     }
+                    frontier.push(...nset)
+                    while (frontier.length) {
+                        const v = frontier.pop()!
+                        if (allSuccsIn(v, nset, g)) continue
+                        if (!nset.has(v)) continue
+                        nset.delete(v)
+                        for (const i in g.rev_edge[v]) {
+                            frontier.push(i)
+                        }
+                    }
+
                     return {
                         ...e,
                         value,
@@ -78,26 +121,18 @@ const checkState = (e: Expr, g: GraphData, all: Set<string>): Expr => {
                     }
                 }
 
-                case "generally":
-                    const value = checkState(e.value, g, all)
+                case "generally": {
+                    const value = checkState(e.value, g, all, quant)
                     if (value.nset === undefined) throw new Error("No nset")
                     const frontier: string[] = [...value.nset]
                     const nset = new Set(value.nset)
                     while (frontier.length) {
                         const v = frontier.pop()!
                         if (!nset.has(v)) continue
-                        let hasCont = false
-                        for (const next in g.edge[v]) {
-                            if (nset.has(next)) {
-                                hasCont = true
-                                break
-                            }
-                        }
-                        if (!hasCont) {
+                        if (!succsIn(v, nset, quant, g)) {
                             nset.delete(v)
                             for (const n in g.vtxs[v])
                                 frontier.push(n)
-
                         }
                     }
                     return {
@@ -105,14 +140,15 @@ const checkState = (e: Expr, g: GraphData, all: Set<string>): Expr => {
                         value,
                         nset,
                     }
+                }
             }
         }
         case "temporalBiOp": {
             throw new Error("biop")
         }
         case "logicalBiOp": {
-            const lhs = checkState(e.lhs, g, all)
-            const rhs = checkState(e.rhs, g, all)
+            const lhs = checkState(e.lhs, g, all, quant)
+            const rhs = checkState(e.rhs, g, all, quant)
             if (lhs.nset === undefined || rhs.nset === undefined)
                 throw new Error("NSet is not set on subexpr")
 
@@ -147,7 +183,7 @@ const checkState = (e: Expr, g: GraphData, all: Set<string>): Expr => {
             }
         }
         case "logicalUnOp": {
-            const value = checkState(e.value, g, all)
+            const value = checkState(e.value, g, all, quant)
             if (!value.nset) throw new Error("NSet is not set on subexpr")
             return {
                 ...e,

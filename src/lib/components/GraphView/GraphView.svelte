@@ -39,12 +39,21 @@
     const randRange = () => (Math.random() - .5) * 20
 
     $effect(()=>{
-        const layout = new ForceSupervisor(graph, { isNodeFixed: (_, attr) => attr.highlighted });
+        const layout = new ForceSupervisor(graph, {
+            isNodeFixed: (_, attr) => attr.highlighted,
+            settings: {
+                // gravity: 0.0001,
+                // repulsion: 0.1,
+                // attraction: 0.0005,
+                gravity: 0.0006,
+                repulsion: 0.1,
+                attraction: 0.0005,
+            }
+
+        });
         layout.start();
 
-        return () => {
-            layout.kill()
-        }
+        return () => layout.kill()
     })
 
     $effect(()=>{

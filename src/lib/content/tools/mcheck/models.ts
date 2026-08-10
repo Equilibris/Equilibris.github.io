@@ -7,7 +7,9 @@ export type LogicalBiOp = "iff" | "and" | "or" | "implies"
 export type LogicalUnOp = "not"
 
 interface ENode {
-    stx: SyntaxNode; nset?: Set<string>
+    stx: SyntaxNode
+    nset?: Set<string>
+    sval: string
 }
 interface BoolExpr extends ENode {
     kind: "bool"; value: boolean
@@ -31,7 +33,7 @@ interface LogicalUnExpr extends ENode {
     kind: "logicalUnOp"; form: LogicalUnOp; value: Expr
 }
 interface Hole extends ENode {
-    kind: "hole"; content: string; more?: unknown
+    kind: "hole"; more?: unknown
 }
 
 export type Expr = BoolExpr

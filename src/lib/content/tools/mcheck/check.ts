@@ -144,7 +144,41 @@ const checkState = (e: Expr, g: GraphData, all: Set<string>, quant: Quant): Expr
             }
         }
         case "temporalBiOp": {
-            throw new Error("biop")
+            const lhs = checkState(e.lhs, g, all, quant)
+            const rhs = checkState(e.rhs, g, all, quant)
+            if (rhs.nset === undefined || lhs.nset === undefined) throw new Error("No nset")
+            const frontier: string[] = [...rhs.nset]
+            const nset = new Set<string>(...rhs.nset)
+            const seen = new Set<string>()
+            while (frontier.length) {
+                const v = frontier.pop()!
+                if (seen.has(v)) continue
+                if (lhs.nset.has(v) || rhs.nset.has(v)) {
+                    for (const i in g.rev_edge[v]) {
+                        frontier.push(i)
+                    }
+                    nset.add(v)
+                }
+                seen.add(v)
+            }
+            frontier.push(...nset)
+            if (quant === "universal")
+                while (frontier.length) {
+                    const v = frontier.pop()!
+                    if (allSuccsIn(v, nset, g)) continue
+                    if (!nset.has(v)) continue
+                    nset.delete(v)
+                    for (const i in g.rev_edge[v]) {
+                        frontier.push(i)
+                    }
+                }
+
+            return {
+                ...e,
+                lhs,
+                rhs,
+                nset
+            }
         }
         case "logicalBiOp": {
             const lhs = checkState(e.lhs, g, all, quant)

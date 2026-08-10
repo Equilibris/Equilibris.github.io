@@ -5,9 +5,56 @@
 	import { sToGraph } from "$lib/content/tools/mcheck/graph";
 	import { check } from "$lib/content/tools/mcheck/check";
 	import CtlRender from "$lib/components/CtlRender";
+	import A from "$lib/components/A";
+	import { render } from "svelte/server";
+	import classNames from "classnames";
+	import Page from "../../+page.svelte";
+	import { showTopText } from "$lib/state/showTopText";
+	import { deadCol, selCol, unselCol } from "$lib/content/tools/mcheck/colors";
+	import { osc } from "../../hooks/osc.svelte";
+	import type { Expr } from "$lib/content/tools/mcheck/models";
 
-    let ctlStarContent = $state("A G p")
-    let graphContent = $state(`n1[p]\nn2[p]\nn3[p]\nn1 n1\nn2 n1\nn2 n3`)
+    showTopText.set(false)
+
+    let ctlStarContent = $state(
+    "l U r"
+    // "A G (pay -> E X coffee)"
+    )
+    let graphContent = $state(
+`1
+2[l]
+3[l]
+4[r]
+1 2
+2 3
+3 4
+4 4
+`
+/*
+`gstart[]
+gpay[pay]
+gtea[tea]
+gcoffee[coffee]
+gstart gpay
+gpay gtea
+gpay gcoffee
+gtea gstart
+gcoffee gstart
+
+bstart
+btpay[pay]
+bcpay[pay]
+btea[tea]
+bcoffee[coffee]
+bstart btpay
+bstart bcpay
+btpay btea
+bcpay bcoffee
+btea bstart
+bcoffee bstart
+`
+*/
+)
 
     let deads = $state(new Set<string>())
 
@@ -27,69 +74,180 @@
         }
     })
 
-    $inspect(checked?.nset, parseGraph)
+    const nodes = $derived.by(() => {
+        const vtxs = new Set()
+        for (const v in parseGraph.vtxs) {vtxs.add(v)}
+        return vtxs
+    })
+
+    let selected = $state<null | Expr>(null)
+
+    const setToShow = $derived(
+        (selected ? selected.nset : checked?.nset)
+        || null
+    )
+
+    const spathOsc = osc(3000)
+
+    $inspect(checked)
 </script>
 
-<!-- TODO: Change this to be two flex flows  -->
-<div class="grid top-level-grid min-h-150 gap-2">
-    <div class={`row-span-2 p-2 ${container}`}>
-        <CtlRender expr={parseCtl} />
+<div class="flex min-h-150 gap-2 flex-col lg:flex-row">
+    <div class="flex flex-col items-stretch justify-between gap-2 flex-1">
+        <div class="font-bold">
+            Simple CTL* model checker
+        </div>
+        {#if deads.size}
+            <div class={`row-span-2 p-2 ${container} text-left`}>
+                Some nodes have no successor!
+                This breaks the CTL* model checking algorithm.
+                Please add edges to:
+
+                <ul class="list-disc pl-6">
+                    {#each deads as n}
+                        <li>{n}</li>
+                    {/each}
+                </ul>
+            </div>
+        {/if}
+        <CtlRender expr={checked} bind:selected={selected} />
+        <div class={container}>
+            {#await Promise.all([import("$lib/components/CM"), import("$lib/content/tools/mcheck/graphConfig")])}
+                <div class={`${container} p-2`}>
+                    Loading editor
+                </div>
+            {:then [{default : CM}, { ext }]}
+                <CM
+                    bind:doc={graphContent}
+                    extensions={ext}
+                />
+            {:catch e}
+                <div class={`${container} p-2`}>
+                    Something went wrong {JSON.stringify(e)}
+                </div>
+            {/await}
+        </div>
+        <div class="flex-1"></div>
     </div>
-    <div class={container}>
-        {#await Promise.all([import("$lib/components/CM"), import("$lib/content/tools/mcheck/ctlConfig")])}
-            <div class={`${container} p-2`}>
-                Loading editor
-            </div>
-        {:then [{default : CM}, { ext }]}
-            <CM
-                bind:doc={ctlStarContent}
-                extensions={ext}
-            />
-        {:catch e}
-            <div class={`${container} p-2`}>
-                Something went wrong {JSON.stringify(e)}
-            </div>
-        {/await}
-    </div>
-    <div class={`${container} h-full w-full flex content-stretch items-stretch row-span-2`}>
-        {#await import("$lib/components/GraphView")}
-            <div class={`p-2`}>
-                Loading graph view
-            </div>
-        {:then {default : GraphView}}
-            <GraphView
-                g={parseGraph}
-                checked={checked?.nset || null}
-                bind:deads={deads}
-            />
-        {:catch e}
-            <div class={`p-2`}>
-                Something went wrong {JSON.stringify(e)}
-            </div>
-        {/await}
-    </div>
-    <div class={container}>
-        {#await Promise.all([import("$lib/components/CM"), import("$lib/content/tools/mcheck/graphConfig")])}
-            <div class={`${container} p-2`}>
-                Loading editor
-            </div>
-        {:then [{default : CM}, { ext }]}
-            <CM
-                bind:doc={graphContent}
-                extensions={ext}
-            />
-        {:catch e}
-            <div class={`${container} p-2`}>
-                Something went wrong {JSON.stringify(e)}
-            </div>
-        {/await}
+    <div class="flex flex-col items-stretch justify-between gap-2 flex-3">
+        <div class={container}>
+            {#await Promise.all([import("$lib/components/CM"), import("$lib/content/tools/mcheck/ctlConfig")])}
+                <div class={`${container} p-2`}>
+                    Loading editor
+                </div>
+            {:then [{default : CM}, { ext }]}
+                <CM
+                    bind:doc={ctlStarContent}
+                    extensions={ext}
+                />
+            {:catch e}
+                <div class={`${container} p-2`}>
+                    Something went wrong {JSON.stringify(e)}
+                </div>
+            {/await}
+        </div>
+        <div class={`${container} h-full w-full flex content-stretch items-stretch row-span-2`}>
+            {#await import("$lib/components/GraphView")}
+                <div class={`p-2`}>
+                    Loading graph view
+                </div>
+            {:then {default : GraphView}}
+                <GraphView
+                    g={parseGraph}
+                    checked={setToShow}
+                    bind:deads={deads}
+                />
+            {:catch e}
+                <div class={`p-2`}>
+                    Something went wrong {JSON.stringify(e)}
+                </div>
+            {/await}
+        </div>
     </div>
 </div>
 
-<style>
-    .top-level-grid {
-        grid-template-columns: 1fr 2fr;
-        grid-template-rows: auto 1fr auto;
-    }
-</style>
+<div class="p-2 flex items-center justify-center">
+    <div class={`${container} min-h-50 w-full max-w-200 p-2`}>
+        <p class="indent-[2ex]">
+            <A href="https://en.wikipedia.org/wiki/Computation_tree_logic">Computation tree logic</A> is a form of model checking
+            detailed in the <A href="https://www.cl.cam.ac.uk/teaching/current/HLog+ModC/">Hoare Logic and Model Checking</A> course at Cambridge.
+            It is first order logic extended with temporal and quantitative modalities.
+        </p>
+        <p class="indent-[2ex]">
+            This calculator has two main components: model input and formula input.
+            The formula input is the field that currently contains {ctlStarContent}.
+            The model input is where the model (graph of states) is specified,
+            currently specifying a model with nodes {[...nodes]}. 
+            Notably the notation of start state has been removed,
+            as the model checking algorithm given in lectures does not have this notion.
+            If you want a node to act like a start node, I recommend calling it "start".
+        </p>
+        <div class="p-2"> </div>
+        <p class="indent-[2ex]">
+            Below is a syntax description of CTL*.
+            Notably atomic propositions are always lowercase.
+            Capitals are reserved for modalities.
+        </p>
+        {#snippet rawx(s: string, narrow?: boolean)}
+            <raw class={classNames("bg-gray-200 rounded-xs px-1 inline-block text-center", !narrow && "w-40")}>{s}</raw>
+        {/snippet}
+        <ul class="list-disc pl-6">
+            <p class="-translate-x-6"> FOL: </p>
+            <li>{@render rawx("α -> β")} implication</li>
+            <li>{@render rawx("α <-> β")} biimplication</li>
+            <li>{@render rawx("α && β")} conjunction</li>
+            <li>{@render rawx("α || β")} disjunction</li>
+            <li>{@render rawx("!α")} negation</li>
+            <li>{@render rawx("atp")} (lowercase) atomic proposition</li>
+            <li>{@render rawx("true")} terminal</li>
+            <li>{@render rawx("false")} initial</li>
+            <p class="-translate-x-6"> Path quantifications: </p>
+            <li>{@render rawx("A α")} quantify all paths</li>
+            <li>{@render rawx("E α")} quantify any paths</li>
+            <p class="-translate-x-6"> Temporal modalities </p>
+            <li>{@render rawx("X α")} ne<span class="font-bold">x</span>t node</li>
+            <li>{@render rawx("G α")} <span class="font-bold">G</span>tenerally, always</li>
+            <li>{@render rawx("F α")} <span class="font-bold">F</span>uture, eventually</li>
+            <li>{@render rawx("α U β")} <span class="font-bold">U</span>ntil, α holds generally until β holds</li>
+        </ul>
+        <div class="p-2"> </div>
+        <p class="indent-[2ex]">
+            The syntax of the model specification language is very simple:
+            Specify nodes by their name,
+            then what propositions they match in brackets .
+            This
+        </p>
+        <ul class="list-disc pl-6">
+            <li>{@render rawx("n[a1 a2 a3]")} Node with n satisfying a1 a2 a3</li>
+            <li>{@render rawx("n1 n2 lab")} Edge from n1 to n2 labeled with lab</li>
+        </ul>
+        <div class="p-2"> </div>
+        <p class="indent-[2ex]">
+            The model view has a few different node modes.
+            These signify different states a node can be in.
+        </p>
+        <ul class="list-disc pl-6">
+            <li>
+                <div class="inline-block h-6 w-6 translate-y-2 rounded-full" style={`background-color: ${selCol}`}></div>
+                A node that is included in the curret checked set.
+            </li>
+            <li>
+                <div class="inline-block h-6 w-6 translate-y-2 rounded-full" style={`background-color: ${unselCol}`}></div>
+                A node that is not selected.
+            </li>
+            <li>
+                <div class="inline-block h-6 w-6 translate-y-2 rounded-full border-2 transition duration-3000" style={`background-color: ${spathOsc() ? unselCol : selCol}`}></div>
+                A node with a self-path.
+                <A href="https://www.sigmajs.org/">Sigma.js</A> is a great library,
+                but annoyingly it cant yet render self-paths.
+            </li>
+            <li>
+                <div class="inline-block h-6 w-6 translate-y-2 rounded-full" style={`background-color: ${deadCol}`}></div>
+                A node with no edges. This breaks the model checking algorithm. 
+                If you see a node like this add an edge to it to make the checker function correctly.
+            </li>
+        </ul>
+    </div>
+</div>
+
 

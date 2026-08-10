@@ -45,7 +45,13 @@ const siblingsToExpr = (nd: SyntaxNode | null, s: string): Expr[] => {
 }
 
 const nodeToExpr = (stx: SyntaxNode, s: string): Expr => {
-    const hv: Expr = { kind: "hole", stx: stx, content: s.slice(stx.from, stx.to), more: [stx.name] }
+    const sval = s.slice(stx.from, stx.to)
+    const hv: Expr = {
+        kind: "hole",
+        stx: stx,
+        sval,
+        more: [stx.name]
+    }
     switch (stx.name) {
         case "Atom":
         case "Program":
@@ -64,7 +70,8 @@ const nodeToExpr = (stx: SyntaxNode, s: string): Expr => {
                 kind: "quant",
                 form: s.slice(children[0].stx.from, children[0].stx.to) === "A" ? "universal" : "existential",
                 value: children[1],
-                stx
+                stx,
+                sval
             }
         }
         case "UnaryTemporalFormula": {
@@ -95,7 +102,8 @@ const nodeToExpr = (stx: SyntaxNode, s: string): Expr => {
                 kind: "temporalUnOp",
                 form: form,
                 value: children[1],
-                stx
+                stx,
+                sval
             }
         }
         case "BinaryTemporalFormula": {
@@ -105,7 +113,8 @@ const nodeToExpr = (stx: SyntaxNode, s: string): Expr => {
                 form: "until",
                 lhs: children[0],
                 rhs: children[2],
-                stx
+                stx,
+                sval
             }
         }
         case "UnaryLogFormula": {
@@ -114,14 +123,15 @@ const nodeToExpr = (stx: SyntaxNode, s: string): Expr => {
                 kind: "logicalUnOp",
                 form: "not",
                 value: children[1],
-                stx
+                stx,
+                sval
             }
         }
         case "BinaryLogFormula": {
             const children = siblingsToExpr(stx.firstChild, s)
             let form: null | LogicalBiOp = null
             if (children[1].kind !== "hole") return hv
-            switch (children[1].content) {
+            switch (children[1].sval) {
                 case "&&": { form = "and"; break }
                 case "||": { form = "or"; break }
                 case "->": { form = "implies"; break }
@@ -134,17 +144,18 @@ const nodeToExpr = (stx: SyntaxNode, s: string): Expr => {
                 form,
                 lhs: children[0],
                 rhs: children[2],
-                stx
+                stx,
+                sval
             }
         }
         case "True": {
-            return { kind: "bool", value: true, stx }
+            return { kind: "bool", value: true, stx, sval }
         }
         case "False": {
-            return { kind: "bool", value: false, stx }
+            return { kind: "bool", value: false, stx, sval }
         }
         case "Prop": {
-            return { kind: "prop", value: s.slice(stx.from, stx.to), stx }
+            return { kind: "prop", value: s.slice(stx.from, stx.to), stx, sval }
         }
         default:
             return hv

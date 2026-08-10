@@ -20,7 +20,7 @@ Formula {
   UnaryLogFormula |
   BinaryTemporalFormula |
   BinaryLogFormula
-
+}
 
 Atom { Prop | True | False }
 

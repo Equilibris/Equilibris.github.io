@@ -13,48 +13,13 @@
 	import { deadCol, selCol, unselCol } from "$lib/content/tools/mcheck/colors";
 	import { osc } from "../../hooks/osc.svelte";
 	import type { Expr } from "$lib/content/tools/mcheck/models";
+	import { untrack } from "svelte";
+	import { examples } from "$lib/content/tools/mcheck/examples";
 
     showTopText.set(false)
 
-    let ctlStarContent = $state(
-    "l U r"
-    // "A G (pay -> E X coffee)"
-    )
-    let graphContent = $state(
-`1
-2[l]
-3[l]
-4[r]
-1 2
-2 3
-3 4
-4 4
-`
-/*
-`gstart[]
-gpay[pay]
-gtea[tea]
-gcoffee[coffee]
-gstart gpay
-gpay gtea
-gpay gcoffee
-gtea gstart
-gcoffee gstart
-
-bstart
-btpay[pay]
-bcpay[pay]
-btea[tea]
-bcoffee[coffee]
-bstart btpay
-bstart bcpay
-btpay btea
-bcpay bcoffee
-btea bstart
-bcoffee bstart
-`
-*/
-)
+    let ctlStarContent = $state(examples.coffee[0])
+    let graphContent = $state(examples.coffee[1])
 
     let deads = $state(new Set<string>())
 
@@ -63,6 +28,24 @@ bcoffee bstart
 
     const dbGraph = $derived.by(debounce(() => graphContent, 300))
     const parseGraph = $derived(sToGraph(dbGraph))
+
+    $effect(() => {
+        const url = new URL(location.href)
+        const q = url.searchParams.get("q")
+        const g = url.searchParams.get("g")
+        if (untrack(() => q !== dbCtl || g !== dbGraph)) {
+            if (q) ctlStarContent = q
+            if (g) graphContent = g
+        }
+    })
+
+    $effect(() => {
+        const url = new URL(location.href)
+        if (url.searchParams.get("q") === dbCtl && url.searchParams.get("g") === dbGraph) return
+        if (dbCtl !== examples.coffee[0]) url.searchParams.set("q", dbCtl)
+        if (graphContent !== examples.coffee[1]) url.searchParams.set("g", dbGraph)
+        history.replaceState(null, "", url)
+    })
 
     const checked = $derived.by(()=> {
         try {
@@ -129,7 +112,7 @@ bcoffee bstart
         </div>
         <div class="flex-1"></div>
     </div>
-    <div class="flex flex-col items-stretch justify-between gap-2 flex-3">
+    <div class="flex flex-col items-stretch gap-2 flex-3">
         <div class={container}>
             {#await Promise.all([import("$lib/components/CM"), import("$lib/content/tools/mcheck/ctlConfig")])}
                 <div class={`${container} p-2`}>
@@ -146,7 +129,7 @@ bcoffee bstart
                 </div>
             {/await}
         </div>
-        <div class={`${container} h-full w-full flex content-stretch items-stretch row-span-2`}>
+        <div class={`${container} max-h-175 h-full w-full flex-col content-stretch items-stretch row-span-2`}>
             {#await import("$lib/components/GraphView")}
                 <div class={`p-2`}>
                     Loading graph view

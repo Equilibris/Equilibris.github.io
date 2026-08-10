@@ -1,6 +1,6 @@
 import type { GraphData } from "./models"
 
-const vtxRx = /^(\w+)(\[(.*)\])?$/
+const vtxRx = /^(\w+)(\[(.*)\])?\W*$/
 const edgeRx = /^(\w+) (\w+)( .*)?$/
 
 export const sToGraph = (s: string): GraphData => {
@@ -25,6 +25,10 @@ export const sToGraph = (s: string): GraphData => {
             const from = match[1]
             const to = match[2]
             const name = match[3]
+
+            vtxs[to] ??= new Set()
+            vtxs[from] ??= new Set()
+
             edge[from] ??= {}
             edge[from][to] = name || ""
 

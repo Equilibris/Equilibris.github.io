@@ -10,7 +10,7 @@
 {/snippet}
 
 {#snippet synopsis()}
-    A quick project done before uni was a LL(k) parser implemented as Ruest generics.
+    A quick project done before uni was a LL(k) parser implemented as Rust generics.
 {/snippet}
 
 {#snippet icon()}

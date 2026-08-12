@@ -1,17 +1,15 @@
 <script lang="ts">
 	import { container } from "$lib/style";
     import { sToExpr } from "$lib/content/tools/mcheck/ctls"
-	import { debounce } from "../../hooks/debounce.svelte";
+	import { debounce } from "$lib/hooks/debounce.svelte";
 	import { sToGraph } from "$lib/content/tools/mcheck/graph";
 	import { check } from "$lib/content/tools/mcheck/check";
 	import CtlRender from "$lib/components/CtlRender";
 	import A from "$lib/components/A";
-	import { render } from "svelte/server";
 	import classNames from "classnames";
-	import Page from "../../+page.svelte";
 	import { showTopText } from "$lib/state/showTopText";
 	import { deadCol, selCol, unselCol } from "$lib/content/tools/mcheck/colors";
-	import { osc } from "../../hooks/osc.svelte";
+	import { osc } from "$lib/hooks/osc.svelte";
 	import type { Expr } from "$lib/content/tools/mcheck/models";
 	import { untrack } from "svelte";
 	import { examples } from "$lib/content/tools/mcheck/examples";

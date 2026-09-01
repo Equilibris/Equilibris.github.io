@@ -21,6 +21,15 @@ jobs:
         with:
          node-version: 24
          cache: pnpm
+         cache-dependency-path: |
+           pnpm-lock.yaml
+           vendor/canvas-commons/pnpm-lock.yaml
+
+      - name: Install vendor deps
+        run: pnpm --dir vendor/canvas-commons/ i
+
+      - name: Build vendor
+        run: pnpm --dir vendor/canvas-commons/ run build
 
       - name: Install dependencies
         run: pnpm i

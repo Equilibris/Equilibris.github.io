@@ -11,6 +11,7 @@
 	import RenderScene, { scrollDriver } from "$lib/components/RenderScene";
 	import { baseScene, codeView, paralax } from "./canvs";
 	import classNames from "classnames";
+    import cyls from "$lib/media/cyls.webp"
 
     showTopText.set(false)
 
@@ -48,7 +49,7 @@
             )
         }>
             <Container no-pad class="overflow-hidden">
-                <img src="/cyls.webp" alt="" class="opacity-95">
+                <img src={cyls} alt="" class="opacity-95">
             </Container>
             {#if big}
                 <div class="text-xs text-gray-500 text-left w-full">

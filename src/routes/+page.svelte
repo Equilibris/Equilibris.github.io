@@ -5,6 +5,7 @@
 	import P from '$lib/components/P';
 	import type { Project, BlogPost } from '$lib/content/data';
     import { showTopText } from '$lib/state/showTopText';
+    import harstad from "$lib/media/harstad.jpg"
 
     showTopText.set(true)
 
@@ -16,7 +17,7 @@
     <div class="flex flex-col lg:flex-row max-w-6xl gap-2">
         <div class="flex justify-center flex-col gap-2">
             <Container class="w-full overflow-hidden">
-                <img src="harstad.jpg" alt="home" />
+                <img src={harstad} alt="home" />
             </Container>
             <div class="text-xs text-gray-500 text-right">
                 Photo by <A href="https://unsplash.com/@gskjalmar?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Geir Skjalmar</A> on <A href="https://unsplash.com/photos/a-large-body-of-water-with-snow-covered-mountains-in-the-background-jvPrC3n60u0?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</A>

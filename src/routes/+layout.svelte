@@ -20,7 +20,7 @@
             {@render children?.()}
         </div>
 
-        <div class="flex justify-center">
+        <div class="flex justify-center mt-2">
             <div class="w-[90vw] h-20 border-t border-l border-r border-gray-300 backdrop-blur-sm p-4 rounded-t-sm flex items-center justify-center">
                 <div>
                     Source code for this site on <A href="https://github.com/Equilibris/Equilibris.github.io/">Github</A>

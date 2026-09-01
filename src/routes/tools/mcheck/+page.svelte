@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { container } from "$lib/style";
     import { sToExpr } from "$lib/content/tools/mcheck/ctls"
 	import { debounce } from "$lib/hooks/debounce.svelte";
 	import { sToGraph } from "$lib/content/tools/mcheck/graph";
@@ -13,6 +12,8 @@
 	import type { Expr } from "$lib/content/tools/mcheck/models";
 	import { untrack } from "svelte";
 	import { examples } from "$lib/content/tools/mcheck/examples";
+	import P from "$lib/components/P";
+	import Container from "$lib/components/Container";
 
     showTopText.set(false)
 
@@ -79,7 +80,7 @@
             Simple CTL* model checker
         </div>
         {#if deads.size}
-            <div class={`row-span-2 p-2 ${container} text-left`}>
+            <Container class="row-span-2 text-left">
                 Some nodes have no successor!
                 This breaks the CTL* model checking algorithm.
                 Please add edges to:
@@ -89,12 +90,12 @@
                         <li>{n}</li>
                     {/each}
                 </ul>
-            </div>
+            </Container>
         {/if}
         <CtlRender expr={checked} bind:selected={selected} />
-        <div class={container}>
+        <Container no-pad>
             {#await Promise.all([import("$lib/components/CM"), import("$lib/content/tools/mcheck/graphConfig")])}
-                <div class={`${container} p-2`}>
+                <div class="p-2">
                     Loading editor
                 </div>
             {:then [{default : CM}, { ext }]}
@@ -103,17 +104,17 @@
                     extensions={ext}
                 />
             {:catch e}
-                <div class={`${container} p-2`}>
+                <div class="p-2">
                     Something went wrong {JSON.stringify(e)}
                 </div>
             {/await}
-        </div>
+        </Container>
         <div class="flex-1"></div>
     </div>
     <div class="flex flex-col items-stretch gap-2 flex-3">
-        <div class={container}>
+        <Container no-pad>
             {#await Promise.all([import("$lib/components/CM"), import("$lib/content/tools/mcheck/ctlConfig")])}
-                <div class={`${container} p-2`}>
+                <div class="p-2">
                     Loading editor
                 </div>
             {:then [{default : CM}, { ext }]}
@@ -122,14 +123,14 @@
                     extensions={ext}
                 />
             {:catch e}
-                <div class={`${container} p-2`}>
+                <div class="p-2">
                     Something went wrong {JSON.stringify(e)}
                 </div>
             {/await}
-        </div>
-        <div class={`${container} max-h-175 h-full w-full flex-col content-stretch items-stretch row-span-2`}>
+        </Container>
+        <Container no-pad class="max-h-175 h-full w-full flex-col content-stretch items-stretch row-span-2">
             {#await import("$lib/components/GraphView")}
-                <div class={`p-2`}>
+                <div class="p-2">
                     Loading graph view
                 </div>
             {:then {default : GraphView}}
@@ -139,22 +140,22 @@
                     bind:deads={deads}
                 />
             {:catch e}
-                <div class={`p-2`}>
+                <div class="p-2">
                     Something went wrong {JSON.stringify(e)}
                 </div>
             {/await}
-        </div>
+        </Container>
     </div>
 </div>
 
 <div class="p-2 flex items-center justify-center">
-    <div class={`${container} min-h-50 w-full max-w-200 p-2`}>
-        <p class="indent-[2ex]">
+    <Container class="min-h-50 w-full max-w-200">
+        <P>
             <A href="https://en.wikipedia.org/wiki/Computation_tree_logic">Computation tree logic</A> is a form of model checking
             detailed in the <A href="https://www.cl.cam.ac.uk/teaching/current/HLog+ModC/">Hoare Logic and Model Checking</A> course at Cambridge.
             It is first order logic extended with temporal and quantitative modalities.
-        </p>
-        <p class="indent-[2ex]">
+        </P>
+        <P>
             This calculator has two main components: model input and formula input.
             The formula input is the field that currently contains {ctlStarContent}.
             The model input is where the model (graph of states) is specified,
@@ -162,13 +163,13 @@
             Notably the notation of start state has been removed,
             as the model checking algorithm given in lectures does not have this notion.
             If you want a node to act like a start node, I recommend calling it "start".
-        </p>
+        </P>
         <div class="p-2"> </div>
-        <p class="indent-[2ex]">
+        <P>
             Below is a syntax description of CTL*.
             Notably atomic propositions are always lowercase.
             Capitals are reserved for modalities.
-        </p>
+        </P>
         {#snippet rawx(s: string, narrow?: boolean)}
             <raw class={classNames("bg-gray-200 rounded-xs px-1 inline-block text-center", !narrow && "w-40")}>{s}</raw>
         {/snippet}
@@ -192,21 +193,21 @@
             <li>{@render rawx("α U β")} <span class="font-bold">U</span>ntil, α holds generally until β holds</li>
         </ul>
         <div class="p-2"> </div>
-        <p class="indent-[2ex]">
+        <P>
             The syntax of the model specification language is very simple:
             Specify nodes by their name,
             then what propositions they match in brackets .
             This
-        </p>
+        </P>
         <ul class="list-disc pl-6">
             <li>{@render rawx("n[a1 a2 a3]")} Node with n satisfying a1 a2 a3</li>
             <li>{@render rawx("n1 n2 lab")} Edge from n1 to n2 labeled with lab</li>
         </ul>
         <div class="p-2"> </div>
-        <p class="indent-[2ex]">
+        <P>
             The model view has a few different node modes.
             These signify different states a node can be in.
-        </p>
+        </P>
         <ul class="list-disc pl-6">
             <li>
                 <div class="inline-block h-6 w-6 translate-y-2 rounded-full" style={`background-color: ${selCol}`}></div>
@@ -228,7 +229,7 @@
                 If you see a node like this add an edge to it to make the checker function correctly.
             </li>
         </ul>
-    </div>
+    </Container>
 </div>
 
 

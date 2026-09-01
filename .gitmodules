@@ -1,0 +1,3 @@
+[submodule "vendor/canvas-commons"]
+	path = vendor/canvas-commons
+	url = https://github.com/canvas-commons/canvas-commons

@@ -14,7 +14,9 @@
         "downlevelIteration": true,
         "lib": [
             "ES2024",
-            "ESNext"
+            "ESNext",
+            "DOM",
+            "DOM.Iterable"
         ]
     }
     // Path aliases are handled by https://svelte.dev/docs/kit/configuration#alias

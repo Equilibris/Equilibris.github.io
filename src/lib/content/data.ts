@@ -10,3 +10,15 @@ export interface Project extends BaseProject {
     slug: string
     default: Component
 }
+
+export interface BaseBlogPost {
+    title: Snippet
+    synopsis: Snippet
+    banner: Snippet<[boolean]>
+}
+
+export interface BlogPost extends BaseBlogPost {
+    slug: string
+    default: Component
+}
+

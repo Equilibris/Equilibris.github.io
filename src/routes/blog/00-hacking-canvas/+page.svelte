@@ -10,6 +10,7 @@
 	import { Vector2, } from "@canvas-commons/core";
 	import RenderScene, { scrollDriver } from "$lib/components/RenderScene";
 	import { baseScene, codeView, paralax } from "./canvs";
+	import classNames from "classnames";
 
     showTopText.set(false)
 
@@ -37,15 +38,23 @@
     Making procedural canvas a tool for websites.
 {/snippet}
 
-{#snippet banner(_big : boolean)}
+{#snippet banner(big : boolean)}
     <div class="flex justify-center items-center flex-col">
-        <div class="max-w-300 flex justify-center flex-col gap-2">
+        <div class={
+            classNames(
+                "flex justify-center flex-col gap-2",
+                big && "max-w-300",
+                !big && "max-h-20",
+            )
+        }>
             <Container no-pad class="overflow-hidden">
                 <img src="/cyls.webp" alt="" class="opacity-95">
             </Container>
-            <div class="text-xs text-gray-500 text-left w-full">
-                Photo by <A href="https://unsplash.com/@eternalzard?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Yue Ma</A> on <A href="https://unsplash.com/photos/a-large-group-of-white-round-objects-LZwCJwa978k?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</A>
-            </div>
+            {#if big}
+                <div class="text-xs text-gray-500 text-left w-full">
+                    Photo by <A href="https://unsplash.com/@eternalzard?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Yue Ma</A> on <A href="https://unsplash.com/photos/a-large-group-of-white-round-objects-LZwCJwa978k?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</A>
+                </div>
+            {/if}
         </div>
     </div>
 {/snippet}

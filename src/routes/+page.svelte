@@ -3,12 +3,13 @@
     import A from '$lib/components/A';
 	import Container from '$lib/components/Container';
 	import P from '$lib/components/P';
-	import type { Project } from '$lib/content/data';
+	import type { Project, BlogPost } from '$lib/content/data';
     import { showTopText } from '$lib/state/showTopText';
 
     showTopText.set(true)
 
     const projects : Project[] = Object.values(import.meta.glob("./projects/*/+page.svelte", { eager : true }))
+    const blogs : BlogPost[] = Object.values(import.meta.glob("./blog/*/+page.svelte", { eager : true }))
 </script>
 
 <div id="about-me" class="flex justify-center -mt-25 pt-25">
@@ -26,7 +27,7 @@
                 <P>
                     Hi great to meet you, I'm <span title="/ˈvɪljɑm s.ɔːɹɛnsən/">William Sørensen</span>!
                     I am a computer scientist specializing in programming language theory, compilers and systems programming.
-                    I intend to start a <A href={resolve("/blog")}>blog</A> where I write tools and posts about my course!
+                    I intend to start a <A href={resolve("/#blog")}>blog</A> where I write tools and posts about my course!
                 </P>
 
                 <P>
@@ -52,7 +53,29 @@
     </div>
 </div>
 
-<div class="flex justify-center py-8">
+<div id="blog" class= "flex justify-center py-4">
+    <div class="max-w-6xl w-full flex flex-col gap-2">
+        <Container>
+            I am trying to write a silly little blog.
+            To begin I explore the great lengths I have to go to for animation on the web!
+        </Container>
+        <div class="flex flex-col gap-2">
+            {#each blogs as blog}
+                <a class="flex gap-2 flex-col" href={resolve(`/blog/${blog.slug}` as any)}>
+                    <h2 class="font-bold">
+                        <A> {@render blog.title()} </A>
+                    </h2>
+                    <div class="flex items-center justify-center">
+                        {@render blog.banner(false)}
+                    </div>
+                    {@render blog.synopsis()}
+                </a>
+            {/each}
+        </div>
+    </div>
+</div>
+
+<div class="flex justify-center py-4">
     <div class="max-w-6xl w-full flex flex-col gap-2">
         <Container>
             Over the years I have worked on a few different projects.
@@ -67,7 +90,7 @@
                     </Container>
                     <div class="w-full py-2 flex flex-col justify-center gap-2">
                         <h2 class="font-bold">
-                            <A href={resolve(`/projects/${proj.slug}` as any)}> {@render proj.title()} </A>
+                            <A> {@render proj.title()} </A>
                         </h2>
                         <Container no-pad class="w-full min-h-20 p-2">
                             {@render proj.synopsis()}

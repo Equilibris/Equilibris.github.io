@@ -13,7 +13,7 @@
             </A>
         </div>
         <div class="flex flex-row align-middle mix-blend-screen text-red">
-            <A href={resolve("/blog")}>
+            <A href={resolve("/#blog")}>
                 Blog
             </A>
         </div>

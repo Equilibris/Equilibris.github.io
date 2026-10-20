@@ -25,7 +25,15 @@
 
     export const slug = "00-hacking-canvas"
 
-    export { title, synopsis, banner }
+    export const publishDate = new Date(2026,6,1)
+    export const updateDate = new Date(2026,6,1)
+
+    export {
+        title,
+        synopsis,
+        banner,
+        content
+    }
 </script>
 
 {#snippet cc()}
@@ -60,7 +68,7 @@
     </div>
 {/snippet}
 
-<BlogPostView {title} {synopsis} {banner} rightS={.3}>
+{#snippet content()}
     <BlogPostCell>
         {#snippet left()}
             <div class="relative">
@@ -151,5 +159,9 @@
         </Container>
         <div class="h-50"></div>
     </BlogPostCell>
+{/snippet}
+
+<BlogPostView {title} {synopsis} {banner} {publishDate} {updateDate} rightS={.3}>
+    {@render content()}
 </BlogPostView>
 

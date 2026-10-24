@@ -161,7 +161,6 @@
     </BlogPostCell>
 {/snippet}
 
-<BlogPostView {title} {synopsis} {banner} {publishDate} {updateDate} rightS={.3}>
-    {@render content()}
+<BlogPostView {title} {synopsis} {banner} {publishDate} {updateDate} {content} rightS={.4}>
 </BlogPostView>
 

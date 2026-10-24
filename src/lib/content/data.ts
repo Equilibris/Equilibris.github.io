@@ -11,17 +11,13 @@ export interface Project extends BaseProject {
     default: Component
 }
 
-export interface BaseBlogPost {
+export interface BlogPost {
     title: Snippet
     synopsis: Snippet
     banner: Snippet<[boolean]>
     publishDate: Date
     updateDate: Date
-}
-
-export interface BlogPost extends BaseBlogPost {
-    slug: string
     content: Snippet
-    default: Component
+    slug: string
 }
 

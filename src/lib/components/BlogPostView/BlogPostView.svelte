@@ -1,11 +1,10 @@
 <script lang="ts">
-	import type { BaseBlogPost, } from "$lib/content/data";
+	import type { BlogPost } from "$lib/content/data";
 	import { showTopText } from "$lib/state/showTopText";
 	import type { Snippet } from "svelte";
 	import BlogPostCell from "../BlogPostCell";
 
-    let {children, synopsis, title, banner, leftS, rightS} : BaseBlogPost & {
-        children : Snippet
+    let {synopsis, title, banner, leftS, rightS, content} : BlogPost & {
         leftS?: number
         rightS?: number
     } = $props()
@@ -25,6 +24,6 @@
         </div>
     </BlogPostCell>
 
-    {@render children()}
+    {@render content()}
 </div>
 

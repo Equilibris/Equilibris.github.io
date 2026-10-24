@@ -28,8 +28,6 @@
 
 {#snippet synopsis()}
     Walking through Chapter 2 from Principles of Dependent Type Theory by Angiuli and Gratzer.
-    This is first and foremost a pre-meeting log for chatting with <A href = "https://www.jonmsterling.com/index/">Jon Sterling</A>.
-    Questions for the meeting are marked <Jon>like this</Jon>.
 {/snippet}
 {#snippet banner(big : boolean)}
     <div class="flex justify-center items-center flex-col">
@@ -48,6 +46,12 @@
 {/snippet}
 {#snippet content()}
     <BlogPostCell>
+        <Container>
+            <P>
+                This is first and foremost a pre-meeting log for chatting with <A href = "https://www.jonmsterling.com/index/">Jon Sterling</A>.
+                Questions for the meeting are marked <Jon>like this</Jon>.
+            </P>
+        </Container>
         <Container>
             <P>
                 Chapter 2 of Principles of Dependent Type Theory (from here on known as The Book) concerns itself with defining the rules of type theory.

@@ -23,7 +23,7 @@
 </script>
 
 {#snippet title()}
-    DRAFT: A (basic) understanding of extensional type theory
+    A (basic) understanding of extensional type theory
 {/snippet}
 
 {#snippet synopsis()}
@@ -105,9 +105,9 @@
             <b>Slogan 2.5.5:</b> A connective in type theory is given by (1) a natural type-forming operation
             Υ and (2) one of the following:
             <ol class="list-decimal pl-10">
-            <li> a natural isomorphism relating Tm(Γ, Υ) to judgmentally-determined structure, or </li>
-            <li> a collection of natural term constructors for Υ which, for all Γ.Υ ⊢ 𝐴 type, determine
-            a natural isomorphism relating Tm(Γ.Υ, 𝐴) to judgmentally-determined structure. </li>
+                <li> a natural isomorphism relating Tm(Γ, Υ) to judgmentally-determined structure, or </li>
+                <li> a collection of natural term constructors for Υ which, for all Γ.Υ ⊢ 𝐴 type, determine
+                a natural isomorphism relating Tm(Γ.Υ, 𝐴) to judgmentally-determined structure. </li>
             </ol>
         </Container>
         <Container>
@@ -115,6 +115,15 @@
                 I find the exact constructions quite involved and will try to work with them a bit to actually get a feel for how they operate.
                 <Jon>If you have some more resources on this construction I would happily read them</Jon>.
             </P>
+        </Container>
+        <Container>
+            Some general questions I have for the meeting:
+            <ul class="list-disc pl-6">
+                <li><Jon>Do you have any resources on conservativity?</Jon></li>
+                <li><Jon>Do you have any writings on how these natural transformations work with observational equality?</Jon></li>
+                <li><Jon>What will be the exact mechanism to cross the boundary from <R>MLTT</R> and <R>OTT++</R></Jon></li>
+                <li><Jon>What are some next steps after working through The Book?</Jon></li>
+            </ul>
         </Container>
     </BlogPostCell>
 {/snippet}

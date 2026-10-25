@@ -4,7 +4,7 @@
 	import type { Snippet } from "svelte";
 	import BlogPostCell from "../BlogPostCell";
 
-    let {synopsis, title, banner, leftS, rightS, content} : BlogPost & {
+    let {synopsis, title, banner, leftS, rightS, content, publishDate} : BlogPost & {
         leftS?: number
         rightS?: number
     } = $props()
@@ -18,8 +18,10 @@
         {@render banner(true)}
     </div>
     <BlogPostCell>
-        <div class="pl-4">
+        <div class="pl-4 mt-1">
             <h1 bind:this={header} class="pb-2 font-bold text-2xl"> {@render title()} </h1>
+            <p class="-mt-2 mb-1 text-gray-500 font-light">{publishDate.toLocaleDateString()}</p>
+
             <p class="pb-2"> {@render synopsis()} </p>
         </div>
     </BlogPostCell>

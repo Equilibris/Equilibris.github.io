@@ -10,7 +10,8 @@
     showTopText.set(true)
 
     const projects : Project[] = Object.values(import.meta.glob("./projects/*/+page.svelte", { eager : true }))
-    const blogs : BlogPost[] = Object.values(import.meta.glob("./blog/*/+page.svelte", { eager : true }))
+    const blogs = (Object.values(import.meta.glob("./blog/*/+page.svelte", { eager : true })) as BlogPost[])
+        .sort((a,b)=> b.publishDate.getTime() - a.publishDate.getTime())
 </script>
 
 <div id="about-me" class="flex justify-center -mt-25 pt-25">
